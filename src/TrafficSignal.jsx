@@ -1,12 +1,8 @@
-// src/TrafficSignal.jsx
-
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { changeSignal } from './redux/actionCreators';
+import React, { useContext } from 'react';
 import redSignal from './images/redSignal.jpeg';
 import yellowSignal from './images/yellowSignal.jpeg';
 import greenSignal from './images/greenSignal.jpeg';
+import { MyContext } from './App';
 
 const renderSignal = (signalColor) => {
   if (signalColor === 'red') return redSignal;
@@ -15,7 +11,18 @@ const renderSignal = (signalColor) => {
   return null;
 };
 
-const TrafficSignal = ({ signalColor, changeSignal }) => {
+export default () => {
+  const {
+    setContext,
+    context,
+    context: { signal },
+    context: {
+      signal: { color },
+    },
+  } = useContext(MyContext);
+
+  const changeSignal = (change) => setContext({ ...context, signal: { color: change } });
+
   return (
     <div>
       <div className="button-container">
@@ -29,20 +36,7 @@ const TrafficSignal = ({ signalColor, changeSignal }) => {
           Green
         </button>
       </div>
-      <img className="signal" src={renderSignal(signalColor)} alt="" />
+      <img className="signal" src={renderSignal(color)} alt="" />
     </div>
   );
 };
-
-const mapStateToProps = (state) => ({
-  signalColor: state.trafficReducer.signal.color
-});
-
-const mapDispatchToProps = { changeSignal };
-
-TrafficSignal.propTypes = {
-  changeSignal: PropTypes.func.isRequired,
-  signalColor: PropTypes.string.isRequired,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(TrafficSignal);
